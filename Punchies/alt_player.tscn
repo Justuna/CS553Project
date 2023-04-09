@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjvn2sf7cjive"]
+
+[ext_resource type="Script" path="res://AltPlayer.cs" id="1_k2ycj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r2t64"]
+
+[node name="Player" type="Area2D"]
+scale = Vector2(5, 5)
+script = ExtResource("1_k2ycj")
+
+[node name="Model" type="Node2D" parent="."]
+position = Vector2(0, -10)
+
+[node name="Body" type="ColorRect" parent="Model"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.388235, 1, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Nose" type="ColorRect" parent="Model"]
+offset_left = 8.33333
+offset_top = -2.16667
+offset_right = 12.3333
+offset_bottom = 1.83333
+color = Color(0, 0.388235, 1, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Trigger" type="CollisionShape2D" parent="."]
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_r2t64")
