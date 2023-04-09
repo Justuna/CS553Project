@@ -20,11 +20,6 @@ public partial class Player : CharacterBody2D
     {
     }
 
-    public override void _PhysicsProcess(double delta)
-    {
-        HandleInputs();
-    }
-
     public void HandleInputs()
     {
         if (IsOnFloor())
