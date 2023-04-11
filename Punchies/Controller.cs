@@ -1,31 +1,57 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Controller : Node2D
 {
-	[Export]
-	private Player player1;
+	private Player _hostPlayer;
+    private Player _networkPlayer;
 
-    private bool _hasInput = true;
+    [Export]
+    private InputReader _inputReader;
+
+    [Export]
+    private int _frameDelay = 3;
+
+    private Queue<int> _inputBufferHost = new Queue<int>();
+    private Queue<int> _inputBufferRemote = new Queue<int>();
+
+    public override void _Ready()
+    {
+        _hostPlayer = GetNode<Player>("Player1");
+
+        for (int i = 0; i < _frameDelay; i++)
+        {
+            _inputBufferHost.Enqueue(0);
+            _inputBufferRemote.Enqueue(0);
+        }
+    }
 
     public override void _PhysicsProcess(double delta)
     {
         GD.Print("Running");
-        if (!_hasInput)
+
+        if (_inputBufferRemote.Count > 0)
+        {
+            _inputBufferHost.Enqueue(_inputReader.ConsumeInput());
+
+            int input1 = _inputBufferHost.Dequeue();
+            //int input2 = _inputBufferRemote.Dequeue();
+
+            _hostPlayer.HandleInputs(input1);
+        }
+        else
         {
             GetTree().Paused = true;
-            return;
         }
-
-        player1.HandleInputs();
     }
 
-    public void ToggleInput()
+    public void ReceiveNetworkInput(int input)
     {
-        _hasInput = !_hasInput;
-        if (_hasInput)
+        _inputBufferRemote.Enqueue(input);
+        if (_inputBufferRemote.Count > _frameDelay)
         {
             GetTree().Paused = false;
-        }
+        }  
     }
 }

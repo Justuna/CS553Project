@@ -20,16 +20,16 @@ public partial class Player : CharacterBody2D
     {
     }
 
-    public void HandleInputs()
+    public void HandleInputs(int input)
     {
         if (IsOnFloor())
         {
-            if (Input.IsActionPressed("Left"))
+            if ((input & (int)InputFlags.Left) == (int)InputFlags.Left)
             {
                 _direction = Vector2.Left;
                 Velocity = new Vector2(-_speed, Velocity.Y);
             }
-            else if (Input.IsActionPressed("Right"))
+            else if ((input & (int)InputFlags.Right) == (int)InputFlags.Right)
             {
                 _direction = Vector2.Right;
                 Velocity = new Vector2(_speed, Velocity.Y);
@@ -39,7 +39,7 @@ public partial class Player : CharacterBody2D
                 Velocity = new Vector2(0, Velocity.Y);
             }
 
-            if (Input.IsActionPressed("Jump"))
+            if ((input & (int)InputFlags.Jump) == (int)InputFlags.Jump)
             {
                 Velocity = new Vector2(Velocity.X, -_jumpSpeed);
             }
