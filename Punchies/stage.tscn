@@ -13,9 +13,8 @@ size = Vector2(32.5, 523)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uv607"]
 size = Vector2(1211, 54)
 
-[node name="Stage" type="Node2D" node_paths=PackedStringArray("player1", "_inputReader")]
+[node name="Stage" type="Node2D" node_paths=PackedStringArray("_inputReader")]
 script = ExtResource("1_jshqn")
-player1 = NodePath("Player1")
 _inputReader = NodePath("InputReader")
 
 [node name="Background" type="ColorRect" parent="."]
@@ -63,6 +62,10 @@ position = Vector2(160, 505)
 _speed = 400.0
 _gravity = 75.0
 _jumpSpeed = 1500.0
+
+[node name="Player2" parent="." instance=ExtResource("1_q0fov")]
+position = Vector2(992, 505)
+_color = Color(0.894118, 0.207843, 0, 1)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 326)

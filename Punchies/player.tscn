@@ -12,6 +12,7 @@ script = ExtResource("1_hrqn3")
 _speed = 100.0
 _gravity = 1.0
 _jumpSpeed = 100.0
+_color = Color(0, 0.47451, 1, 1)
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 position = Vector2(0, -60)
@@ -32,7 +33,7 @@ offset_top = -20.0
 offset_right = 10.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0.388235, 1, 1)
+color = Color(0, 0, 0, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="Nose" type="ColorRect" parent="Model"]
@@ -40,5 +41,5 @@ offset_left = 9.0
 offset_top = -12.0
 offset_right = 13.0
 offset_bottom = -8.0
-color = Color(0, 0.388235, 1, 1)
+color = Color(0, 0, 0, 1)
 metadata/_edit_use_anchors_ = true
