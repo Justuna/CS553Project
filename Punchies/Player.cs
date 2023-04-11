@@ -12,9 +12,11 @@ public partial class Player : CharacterBody2D
     private float _jumpSpeed;
     [Export]
     private Color _color;
+    [Export]
+    private Player _opponent;
 
-    private Vector2 LEFT_SCALE = new Vector2(-1, 1);
-    private Vector2 RIGHT_SCALE = new Vector2(1, 1);
+    private Vector2 LEFT_SCALE = new Vector2(-6, 6);
+    private Vector2 RIGHT_SCALE = new Vector2(6, 6);
 
     private Vector2 _direction = Vector2.Right;
 
@@ -53,5 +55,17 @@ public partial class Player : CharacterBody2D
             Velocity += new Vector2(0, _gravity);
         }
         MoveAndSlide();
+
+        Node2D Model = GetNode<Node2D>("Model");
+        if (_opponent.Position.X > Position.X)
+        {
+            Model.Scale = RIGHT_SCALE;
+            _direction = Vector2.Right;
+        }
+        else if (_opponent.Position.X < Position.X)
+        {
+            Model.Scale = LEFT_SCALE;
+            _direction = Vector2.Left;
+        }
     }
 }

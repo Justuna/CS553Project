@@ -19,6 +19,7 @@ public partial class Controller : Node2D
     public override void _Ready()
     {
         _hostPlayer = GetNode<Player>("Player1");
+        _networkPlayer = GetNode<Player>("Player2");
 
         for (int i = 0; i < _frameDelay; i++)
         {

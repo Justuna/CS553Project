@@ -57,15 +57,17 @@ shape = SubResource("RectangleShape2D_darqp")
 position = Vector2(573.5, -28)
 shape = SubResource("RectangleShape2D_uv607")
 
-[node name="Player1" parent="." instance=ExtResource("1_q0fov")]
+[node name="Player1" parent="." node_paths=PackedStringArray("_opponent") instance=ExtResource("1_q0fov")]
 position = Vector2(160, 505)
 _speed = 400.0
 _gravity = 75.0
 _jumpSpeed = 1500.0
+_opponent = NodePath("../Player2")
 
-[node name="Player2" parent="." instance=ExtResource("1_q0fov")]
+[node name="Player2" parent="." node_paths=PackedStringArray("_opponent") instance=ExtResource("1_q0fov")]
 position = Vector2(992, 505)
 _color = Color(0.894118, 0.207843, 0, 1)
+_opponent = NodePath("../Player1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 326)
