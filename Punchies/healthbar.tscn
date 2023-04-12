@@ -5,7 +5,7 @@
 [node name="Healthbar" type="ColorRect" node_paths=PackedStringArray("_fill")]
 offset_right = 400.0
 offset_bottom = 40.0
-color = Color(0, 0.352941, 0.388235, 1)
+color = Color(0.109804, 0.356863, 0.298039, 1)
 script = ExtResource("1_jb3x1")
 _fill = NodePath("Fill")
 

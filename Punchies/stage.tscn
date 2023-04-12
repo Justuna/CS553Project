@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://denqj3y0v4v7x"]
+[gd_scene load_steps=7 format=3 uid="uid://denqj3y0v4v7x"]
 
 [ext_resource type="Script" path="res://Controller.cs" id="1_jshqn"]
 [ext_resource type="PackedScene" uid="uid://io6ucck0oklj" path="res://player.tscn" id="1_q0fov"]
@@ -10,9 +10,6 @@ size = Vector2(1183, 226)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_darqp"]
 size = Vector2(32.5, 523)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_uv607"]
-size = Vector2(1211, 54)
 
 [node name="Stage" type="Node2D" node_paths=PackedStringArray("_inputReader")]
 script = ExtResource("1_jshqn")
@@ -52,18 +49,17 @@ position = Vector2(-10, 714)
 position = Vector2(1178.25, -461)
 shape = SubResource("RectangleShape2D_darqp")
 
-[node name="Ceiling" type="StaticBody2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ceiling"]
-position = Vector2(573.5, -28)
-shape = SubResource("RectangleShape2D_uv607")
-
 [node name="Player1" parent="." node_paths=PackedStringArray("_opponent") instance=ExtResource("1_q0fov")]
 position = Vector2(160, 505)
 _speed = 400.0
 _gravity = 75.0
 _jumpSpeed = 1500.0
 _opponent = NodePath("../Player2")
+
+[node name="Player2" parent="." node_paths=PackedStringArray("_opponent") instance=ExtResource("1_q0fov")]
+position = Vector2(992, 505)
+_color = Color(0.894118, 0.207843, 0, 1)
+_opponent = NodePath("../Player1")
 
 [node name="Healthbar1" parent="." instance=ExtResource("3_v0jag")]
 offset_left = 20.0
@@ -77,11 +73,6 @@ offset_top = 20.0
 offset_right = 1532.0
 offset_bottom = 60.0
 scale = Vector2(-1, 1)
-
-[node name="Player2" parent="." node_paths=PackedStringArray("_opponent") instance=ExtResource("1_q0fov")]
-position = Vector2(992, 505)
-_color = Color(0.894118, 0.207843, 0, 1)
-_opponent = NodePath("../Player1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 326)
