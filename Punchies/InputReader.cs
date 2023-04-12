@@ -29,6 +29,10 @@ public partial class InputReader : Node
 		{
 			currentFlags |= (int)InputFlags.Jump;
 		}
+		if (Input.IsActionPressed("Punch"))
+        {
+			currentFlags |= (int)InputFlags.Punch;
+		}
 	}
 
 	public int ConsumeInput()

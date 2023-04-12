@@ -20,6 +20,9 @@ public partial class Player : CharacterBody2D
 
     private Vector2 _direction = Vector2.Right;
 
+    private const int MAX_HEALTH = 100;
+    private int _health = MAX_HEALTH;
+
     public override void _Ready()
     {
         GetNode<ColorRect>("Model/Body").Color = _color;

@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4btg5pl6dtwt"]
+
+[ext_resource type="Script" path="res://Healthbar.cs" id="1_jb3x1"]
+
+[node name="Healthbar" type="ColorRect" node_paths=PackedStringArray("_fill")]
+offset_right = 400.0
+offset_bottom = 40.0
+color = Color(0, 0.352941, 0.388235, 1)
+script = ExtResource("1_jb3x1")
+_fill = NodePath("Fill")
+
+[node name="Fill" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 400.0
+offset_bottom = 20.0
+grow_vertical = 2
+color = Color(0.117647, 1, 0.545098, 1)
+script = ExtResource("1_jb3x1")

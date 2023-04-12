@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://denqj3y0v4v7x"]
+[gd_scene load_steps=8 format=3 uid="uid://denqj3y0v4v7x"]
 
 [ext_resource type="Script" path="res://Controller.cs" id="1_jshqn"]
 [ext_resource type="PackedScene" uid="uid://io6ucck0oklj" path="res://player.tscn" id="1_q0fov"]
 [ext_resource type="Script" path="res://InputReader.cs" id="3_v0had"]
+[ext_resource type="PackedScene" uid="uid://c4btg5pl6dtwt" path="res://healthbar.tscn" id="3_v0jag"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jflht"]
 size = Vector2(1183, 226)
@@ -63,6 +64,19 @@ _speed = 400.0
 _gravity = 75.0
 _jumpSpeed = 1500.0
 _opponent = NodePath("../Player2")
+
+[node name="Healthbar1" parent="." instance=ExtResource("3_v0jag")]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 420.0
+offset_bottom = 60.0
+
+[node name="Healthbar2" parent="." instance=ExtResource("3_v0jag")]
+offset_left = 1132.0
+offset_top = 20.0
+offset_right = 1532.0
+offset_bottom = 60.0
+scale = Vector2(-1, 1)
 
 [node name="Player2" parent="." node_paths=PackedStringArray("_opponent") instance=ExtResource("1_q0fov")]
 position = Vector2(992, 505)

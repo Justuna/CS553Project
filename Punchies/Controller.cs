@@ -30,8 +30,6 @@ public partial class Controller : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        GD.Print("Running");
-
         if (_inputBufferRemote.Count > 0)
         {
             _inputBufferHost.Enqueue(_inputReader.ConsumeInput());
