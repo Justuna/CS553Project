@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://denqj3y0v4v7x"]
+[gd_scene load_steps=8 format=3 uid="uid://denqj3y0v4v7x"]
 
 [ext_resource type="Script" path="res://Controller.cs" id="1_jshqn"]
 [ext_resource type="PackedScene" uid="uid://io6ucck0oklj" path="res://player.tscn" id="1_q0fov"]
@@ -7,6 +7,9 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jflht"]
 size = Vector2(1183, 226)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v23e8"]
+size = Vector2(1192, 20)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_darqp"]
 size = Vector2(32.5, 523)
@@ -35,6 +38,12 @@ visible = false
 position = Vector2(577.5, 619)
 shape = SubResource("RectangleShape2D_jflht")
 
+[node name="Ceiling" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ceiling"]
+position = Vector2(577, -12)
+shape = SubResource("RectangleShape2D_v23e8")
+
 [node name="Left Wall" type="StaticBody2D" parent="."]
 position = Vector2(-5, 357)
 
@@ -49,26 +58,31 @@ position = Vector2(-10, 714)
 position = Vector2(1178.25, -461)
 shape = SubResource("RectangleShape2D_darqp")
 
-[node name="Player1" parent="." node_paths=PackedStringArray("_opponent") instance=ExtResource("1_q0fov")]
+[node name="Player1" parent="." node_paths=PackedStringArray("_opponent", "_healthbar") instance=ExtResource("1_q0fov")]
 position = Vector2(160, 505)
-_speed = 400.0
-_gravity = 75.0
-_jumpSpeed = 1500.0
+slide_on_ceiling = false
 _punchSpeed = 0.6
 _punchActiveStart = 0.4
 _punchActiveEnd = 0.7
 _color = Color(0.14902, 0.443137, 1, 1)
+_stunColor = Color(0.466667, 0.541176, 0.619608, 1)
 _fistColor = Color(0.0431373, 0.188235, 1, 1)
 _fistColorActive = Color(0.0666667, 0.878431, 0.87451, 1)
 _opponent = NodePath("../Player2")
+_healthbar = NodePath("../Healthbar1")
 
-[node name="Player2" parent="." node_paths=PackedStringArray("_opponent") instance=ExtResource("1_q0fov")]
-position = Vector2(992, 505)
+[node name="Player2" parent="." node_paths=PackedStringArray("_opponent", "_healthbar") instance=ExtResource("1_q0fov")]
+position = Vector2(993, 505)
+slide_on_ceiling = false
 _punchSpeed = 0.6
+_punchActiveStart = 0.4
+_punchActiveEnd = 0.7
 _color = Color(0.870588, 0.180392, 0.207843, 1)
+_stunColor = Color(0.619608, 0.403922, 0.403922, 1)
 _fistColor = Color(0.607843, 0, 0.113725, 1)
-_fistColorActive = Color(1, 0.396078, 0.419608, 1)
+_fistColorActive = Color(1, 0.396078, 0.678431, 1)
 _opponent = NodePath("../Player1")
+_healthbar = NodePath("../Healthbar2")
 
 [node name="Healthbar1" parent="." instance=ExtResource("3_v0jag")]
 offset_left = 20.0

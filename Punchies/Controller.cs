@@ -38,7 +38,9 @@ public partial class Controller : Node2D
             //int input2 = _inputBufferRemote.Dequeue();
 
             _hostPlayer.HandleInputs(input1);
-            _networkPlayer.HandleInputs(0);
+            _networkPlayer.HandleInputs((int) InputFlags.Punch);
+            _hostPlayer.HitDetection();
+            _networkPlayer.HitDetection();
         }
         else
         {
