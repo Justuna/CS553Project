@@ -54,11 +54,20 @@ position = Vector2(160, 505)
 _speed = 400.0
 _gravity = 75.0
 _jumpSpeed = 1500.0
+_punchSpeed = 0.6
+_punchActiveStart = 0.4
+_punchActiveEnd = 0.7
+_color = Color(0.14902, 0.443137, 1, 1)
+_fistColor = Color(0.0431373, 0.188235, 1, 1)
+_fistColorActive = Color(0.0666667, 0.878431, 0.87451, 1)
 _opponent = NodePath("../Player2")
 
 [node name="Player2" parent="." node_paths=PackedStringArray("_opponent") instance=ExtResource("1_q0fov")]
 position = Vector2(992, 505)
-_color = Color(0.894118, 0.207843, 0, 1)
+_punchSpeed = 0.6
+_color = Color(0.870588, 0.180392, 0.207843, 1)
+_fistColor = Color(0.607843, 0, 0.113725, 1)
+_fistColorActive = Color(1, 0.396078, 0.419608, 1)
 _opponent = NodePath("../Player1")
 
 [node name="Healthbar1" parent="." instance=ExtResource("3_v0jag")]

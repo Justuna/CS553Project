@@ -1,6 +1,5 @@
 using Godot;
 using System;
-
 [Flags]
 public enum InputFlags
 {
@@ -42,6 +41,6 @@ public partial class InputReader : Node
 
 		// Send oldInput down the wire to other client
 
-		return oldInput;
+        return oldInput;
     }
 }

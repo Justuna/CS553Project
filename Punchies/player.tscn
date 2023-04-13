@@ -1,8 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://io6ucck0oklj"]
+[gd_scene load_steps=6 format=3 uid="uid://io6ucck0oklj"]
 
 [ext_resource type="Script" path="res://Player.cs" id="1_hrqn3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_djkwl"]
+size = Vector2(120, 120)
+
+[sub_resource type="Curve2D" id="Curve2D_kavh8"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, -60, 0, 0, 0, 0, 175, -60, 0, 0, 0, 0, 0, -60)
+}
+point_count = 3
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wfot6"]
+size = Vector2(32, 33)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u25wp"]
 size = Vector2(120, 120)
 
 [node name="Player" type="CharacterBody2D"]
@@ -11,7 +23,7 @@ script = ExtResource("1_hrqn3")
 _speed = 100.0
 _gravity = 1.0
 _jumpSpeed = 100.0
-_color = Color(0, 0.47451, 1, 1)
+_punchSpeed = 1.0
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 position = Vector2(0, -60)
@@ -42,3 +54,30 @@ offset_right = 13.0
 offset_bottom = -8.0
 color = Color(0, 0, 0, 1)
 metadata/_edit_use_anchors_ = true
+
+[node name="FistPath" type="Path2D" parent="."]
+z_index = 1
+curve = SubResource("Curve2D_kavh8")
+
+[node name="Fist" type="PathFollow2D" parent="FistPath"]
+position = Vector2(0, -60)
+loop = false
+
+[node name="Model" type="ColorRect" parent="FistPath/Fist"]
+offset_left = -16.0
+offset_top = -17.0
+offset_right = 16.0
+offset_bottom = 16.0
+
+[node name="Hitbox" type="Area2D" parent="FistPath/Fist"]
+
+[node name="Collider" type="CollisionShape2D" parent="FistPath/Fist/Hitbox"]
+visible = false
+shape = SubResource("RectangleShape2D_wfot6")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+
+[node name="Collider" type="CollisionShape2D" parent="Hurtbox"]
+visible = false
+position = Vector2(0, -60)
+shape = SubResource("RectangleShape2D_u25wp")

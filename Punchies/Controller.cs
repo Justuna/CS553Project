@@ -38,6 +38,7 @@ public partial class Controller : Node2D
             //int input2 = _inputBufferRemote.Dequeue();
 
             _hostPlayer.HandleInputs(input1);
+            _networkPlayer.HandleInputs(0);
         }
         else
         {
