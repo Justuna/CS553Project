@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public partial class Controller : Node2D
 {
-	private Player _hostPlayer;
+    private Player _hostPlayer;
     private Player _networkPlayer;
 
     [Export]
@@ -15,6 +15,8 @@ public partial class Controller : Node2D
 
     private Queue<int> _inputBufferHost = new Queue<int>();
     private Queue<int> _inputBufferRemote = new Queue<int>();
+
+    private bool _gameOver = false;
 
     public override void _Ready()
     {
@@ -30,6 +32,19 @@ public partial class Controller : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (_hostPlayer.Health == 0 || _networkPlayer.Health == 0)
+        {
+            _hostPlayer.HandleInputs(0);
+            _networkPlayer.HandleInputs(0);
+
+            if (!_gameOver)
+            {
+                _gameOver = true;
+                GameOverHandler();
+            }
+
+            return;
+        }
         if (_inputBufferRemote.Count > 0)
         {
             _inputBufferHost.Enqueue(_inputReader.ConsumeInput());
@@ -38,7 +53,7 @@ public partial class Controller : Node2D
             //int input2 = _inputBufferRemote.Dequeue();
 
             _hostPlayer.HandleInputs(input1);
-            _networkPlayer.HandleInputs((int) InputFlags.Punch);
+            _networkPlayer.HandleInputs((int)InputFlags.Punch);
             _hostPlayer.HitDetection();
             _networkPlayer.HitDetection();
         }
@@ -54,6 +69,11 @@ public partial class Controller : Node2D
         if (_inputBufferRemote.Count > _frameDelay)
         {
             GetTree().Paused = false;
-        }  
+        }
+    }
+
+    private void GameOverHandler()
+    {
+
     }
 }
