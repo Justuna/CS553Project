@@ -62,14 +62,14 @@ shape = SubResource("RectangleShape2D_darqp")
 position = Vector2(160, 505)
 slide_on_ceiling = false
 _punchSpeed = 0.6
-_blockSpeed = 0.6
+_blockSpeed = 0.25
 _punchActiveStart = 0.4
 _punchActiveEnd = 0.7
 _color = Color(0.14902, 0.443137, 1, 1)
 _stunColor = Color(0.270588, 0.329412, 0.4, 1)
 _fistColor = Color(0, 0.0470588, 0.607843, 1)
 _fistColorActive = Color(0.196078, 0.980392, 1, 1)
-_fistColorBlock = Color(0.992157, 0.686275, 0, 1)
+_fistColorBlock = Color(1, 1, 0, 1)
 _opponent = NodePath("../Player2")
 _healthbar = NodePath("../Healthbar1")
 
@@ -77,14 +77,14 @@ _healthbar = NodePath("../Healthbar1")
 position = Vector2(993, 505)
 slide_on_ceiling = false
 _punchSpeed = 0.6
-_blockSpeed = 0.6
+_blockSpeed = 0.25
 _punchActiveStart = 0.4
 _punchActiveEnd = 0.7
 _color = Color(0.870588, 0.180392, 0.207843, 1)
 _stunColor = Color(0.490196, 0.309804, 0.305882, 1)
 _fistColor = Color(0.462745, 0, 0, 1)
 _fistColorActive = Color(1, 0.121569, 0.6, 1)
-_fistColorBlock = Color(0.992157, 0.686275, 0, 1)
+_fistColorBlock = Color(1, 1, 0, 1)
 _opponent = NodePath("../Player1")
 _healthbar = NodePath("../Healthbar2")
 
@@ -108,3 +108,18 @@ editor_draw_limits = true
 [node name="InputReader" type="Node" parent="."]
 process_mode = 3
 script = ExtResource("3_v0had")
+
+[node name="EndDisplayTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="EndDisplayLabel" type="Label" parent="."]
+visible = false
+offset_left = 367.0
+offset_top = 215.0
+offset_right = 794.0
+offset_bottom = 290.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Testing"
+horizontal_alignment = 1
+vertical_alignment = 1

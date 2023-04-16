@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public partial class Controller : Node2D
 {
     private Player _hostPlayer;
-    private Player _networkPlayer;
+    private Player _clientPlayer;
 
     [Export]
     private InputReader _inputReader;
@@ -14,28 +14,28 @@ public partial class Controller : Node2D
     private int _frameDelay = 3;
 
     private Queue<int> _inputBufferHost = new Queue<int>();
-    private Queue<int> _inputBufferRemote = new Queue<int>();
+    private Queue<int> _inputBufferClient = new Queue<int>();
 
     private bool _gameOver = false;
 
     public override void _Ready()
     {
         _hostPlayer = GetNode<Player>("Player1");
-        _networkPlayer = GetNode<Player>("Player2");
+        _clientPlayer = GetNode<Player>("Player2");
 
         for (int i = 0; i < _frameDelay; i++)
         {
             _inputBufferHost.Enqueue(0);
-            _inputBufferRemote.Enqueue(0);
+            _inputBufferClient.Enqueue(0);
         }
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        if (_hostPlayer.Health == 0 || _networkPlayer.Health == 0)
+        if (_hostPlayer.Health == 0 || _clientPlayer.Health == 0)
         {
             _hostPlayer.HandleInputs(0);
-            _networkPlayer.HandleInputs(0);
+            _clientPlayer.HandleInputs(0);
 
             if (!_gameOver)
             {
@@ -45,7 +45,7 @@ public partial class Controller : Node2D
 
             return;
         }
-        if (_inputBufferRemote.Count > 0)
+        if (_inputBufferClient.Count > 0)
         {
             _inputBufferHost.Enqueue(_inputReader.ConsumeInput());
 
@@ -53,9 +53,9 @@ public partial class Controller : Node2D
             //int input2 = _inputBufferRemote.Dequeue();
 
             _hostPlayer.HandleInputs(input1);
-            _networkPlayer.HandleInputs((int)InputFlags.Punch);
+            _clientPlayer.HandleInputs((int)InputFlags.Punch);
             _hostPlayer.HitDetection();
-            _networkPlayer.HitDetection();
+            _clientPlayer.HitDetection();
         }
         else
         {
@@ -65,8 +65,8 @@ public partial class Controller : Node2D
 
     public void ReceiveNetworkInput(int input)
     {
-        _inputBufferRemote.Enqueue(input);
-        if (_inputBufferRemote.Count > _frameDelay)
+        _inputBufferClient.Enqueue(input);
+        if (_inputBufferClient.Count > _frameDelay)
         {
             GetTree().Paused = false;
         }
@@ -74,6 +74,29 @@ public partial class Controller : Node2D
 
     private void GameOverHandler()
     {
+        Timer endDisplayTimer = GetNode<Timer>("EndDisplayTimer");
+        
+        endDisplayTimer.Timeout += DisplayGameOver;
+        endDisplayTimer.Start();
+    }
 
+    private void DisplayGameOver()
+    {
+        Label endDisplayLabel = GetNode<Label>("EndDisplayLabel");
+
+        if (_hostPlayer.Health <= 0 && _clientPlayer.Health <= 0)
+        {
+            endDisplayLabel.Text = "Draw!";
+        }
+        else if (_hostPlayer.Health <= 0)
+        {
+            endDisplayLabel.Text = "Player 2 Wins!";
+        }
+        else
+        {
+            endDisplayLabel.Text = "Player 1 Wins!";
+        }
+
+        endDisplayLabel.Visible = true;
     }
 }
