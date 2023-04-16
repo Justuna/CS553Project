@@ -4,97 +4,148 @@ using System.Collections.Generic;
 
 public partial class Controller : Node2D
 {
-    private Player _hostPlayer;
-    private Player _clientPlayer;
+    private Player _homePlayer;
+    private Player _awayPlayer;
 
     [Export]
     private InputReader _inputReader;
+    [Export]
+    private Timer _matchTimer;
+    [Export]
+    private Label _matchTimeLabel;
 
     [Export]
     private int _frameDelay = 3;
 
-    private Queue<int> _inputBufferHost = new Queue<int>();
-    private Queue<int> _inputBufferClient = new Queue<int>();
+    private Queue<int> _inputBufferHome = new Queue<int>();
+    private Queue<int> _inputBufferAway = new Queue<int>();
 
     private bool _gameOver = false;
 
+    // This should change based on netcode stuff, but right now just assume you're host
+    private bool _isHost = true;
+
+    // Default "game start" function that Godot provides
     public override void _Ready()
     {
-        _hostPlayer = GetNode<Player>("Player1");
-        _clientPlayer = GetNode<Player>("Player2");
+        _matchTimer.Timeout += GameOverHandler;
 
+        // Get and fill references to players
+        // Host is always player 1 to maintain consistency between clients
+        if (_isHost)
+        {
+            _homePlayer = GetNode<Player>("Player1");
+            _awayPlayer = GetNode<Player>("Player2");
+        }
+        else
+        {
+            _homePlayer = GetNode<Player>("Player2");
+            _awayPlayer = GetNode<Player>("Player1");
+        }
+
+        // We're using delay-based netcode
+        // Essentially, the game delays your input by a couple of frames in order to give the opponent time for their inputs to reach your computer
+        // If the network takes longer than the delay to deliver the frames, the game has to freeze and wait for enough input to arrive to maintain the delay
+        // Kind of like how video streaming works if you took Internet Tech
+        // This just fills the buffer with "no input" messages
         for (int i = 0; i < _frameDelay; i++)
         {
-            _inputBufferHost.Enqueue(0);
-            _inputBufferClient.Enqueue(0);
+            _inputBufferHome.Enqueue(0);
+            _inputBufferAway.Enqueue(0);
         }
     }
 
+    // Default physics update function that Godot provides
+    // Happens 60 times per second
+    // Will be paused if the game pauses
     public override void _PhysicsProcess(double delta)
     {
-        if (_hostPlayer.Health == 0 || _clientPlayer.Health == 0)
+        _matchTimeLabel.Text = "" + Mathf.Ceil(_matchTimer.TimeLeft);
+        // Detect if the game should be over
+        if (_homePlayer.Health == 0 || _awayPlayer.Health == 0 || _gameOver)
         {
-            _hostPlayer.HandleInputs(0);
-            _clientPlayer.HandleInputs(0);
+            // If the game is over, still simulate physics, but the players should no longer be able to input
+            // So just call the "handle input" function with "no input" messages
+            _homePlayer.HandleInputs(0);
+            _awayPlayer.HandleInputs(0);
 
+            // Also call whatever cleanup functions we need
             if (!_gameOver)
             {
-                _gameOver = true;
                 GameOverHandler();
             }
 
+            // Don't need the actual game loop stuff anymore
             return;
         }
-        if (_inputBufferClient.Count > 0)
-        {
-            _inputBufferHost.Enqueue(_inputReader.ConsumeInput());
 
-            int input1 = _inputBufferHost.Dequeue();
+        // The actual game loop stuff
+        // Check if the buffer for the opponent is filled enough to maintain delay
+        if (_inputBufferAway.Count > 0)
+        {
+            // Get the input from the local input reader and queue it
+            _inputBufferHome.Enqueue(_inputReader.ConsumeInput());
+
+            // Get the current frame's inputs for each player
+            // "Away" player is commented out because no netcode
+            int input1 = _inputBufferHome.Dequeue();
             //int input2 = _inputBufferRemote.Dequeue();
 
-            _hostPlayer.HandleInputs(input1);
-            _clientPlayer.HandleInputs((int)InputFlags.Punch);
-            _hostPlayer.HitDetection();
-            _clientPlayer.HitDetection();
+            // Handle the inputs for each player
+            // Right now, the "Away" player is set to constantly punch
+            // Then handle any attacks that landed
+            _homePlayer.HandleInputs(input1);
+            _awayPlayer.HandleInputs((int)InputFlags.Punch);
+            _homePlayer.HitResolution();
+            _awayPlayer.HitResolution();
         }
+
+        // If the buffer for the "Away" player was not filled, pause the game until the buffer is filled enough
         else
         {
             GetTree().Paused = true;
         }
     }
 
+    // Fills the "Away" player's buffer
+    // A function to be called by whatever script reads from the network
+    // When you make your netcode script, make sure the Node it's attached to is set to never pause so that it can alert the game to unpause
     public void ReceiveNetworkInput(int input)
     {
-        _inputBufferClient.Enqueue(input);
-        if (_inputBufferClient.Count > _frameDelay)
+        _inputBufferAway.Enqueue(input);
+        // If the game was paused, unpause only if there are enough frames of input to maintain the delay
+        if (_inputBufferAway.Count > _frameDelay)
         {
             GetTree().Paused = false;
         }
     }
 
+    // Called once when game ends
     private void GameOverHandler()
     {
+        _gameOver = true;
         Timer endDisplayTimer = GetNode<Timer>("EndDisplayTimer");
         
         endDisplayTimer.Timeout += DisplayGameOver;
         endDisplayTimer.Start();
     }
 
+    // Display to screen message telling you who won
     private void DisplayGameOver()
     {
         Label endDisplayLabel = GetNode<Label>("EndDisplayLabel");
 
-        if (_hostPlayer.Health <= 0 && _clientPlayer.Health <= 0)
+        if ((_homePlayer.Health > _awayPlayer.Health && _isHost) || (_homePlayer.Health < _awayPlayer.Health && !_isHost))
         {
-            endDisplayLabel.Text = "Draw!";
+            endDisplayLabel.Text = "Player 1 Wins!";
         }
-        else if (_hostPlayer.Health <= 0)
+        else if ((_homePlayer.Health > _awayPlayer.Health && !_isHost) || (_homePlayer.Health < _awayPlayer.Health && _isHost))
         {
             endDisplayLabel.Text = "Player 2 Wins!";
         }
         else
         {
-            endDisplayLabel.Text = "Player 1 Wins!";
+            endDisplayLabel.Text = "Draw!";
         }
 
         endDisplayLabel.Visible = true;
