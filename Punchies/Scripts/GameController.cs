@@ -34,6 +34,12 @@ public partial class GameController : Node
 
     private PunchiesNetworkManager _pnm;
 
+    private long counter;
+
+    private const string CLIENT_INPUT_LOG = "res://client.txt";
+    private const string HOST_INPUT_LOG = "res://host.txt";
+    private FileAccess _log;
+
     // Default "game start" function that Godot provides
     public void Initialize(PunchiesNetworkManager pnm, bool isHost)
     {
@@ -65,6 +71,9 @@ public partial class GameController : Node
             _inputBufferHome.Enqueue(0);
             _inputBufferAway.Enqueue(0);
         }
+
+        if (_isHost) _log = FileAccess.Open(HOST_INPUT_LOG, FileAccess.ModeFlags.Write);
+        else _log = FileAccess.Open(CLIENT_INPUT_LOG, FileAccess.ModeFlags.Write);
     }
 
     // Default physics update function that Godot provides
@@ -102,12 +111,17 @@ public partial class GameController : Node
             int input1 = _inputBufferHome.Dequeue();
             int input2 = _inputBufferAway.Dequeue();
 
+            if (_isHost) _log.StoreLine(counter + " " + input1 + " " + input2);
+            else _log.StoreLine(counter + " " + input2 + " " + input1);
+
             // Handle the inputs for each player
             // Then handle any attacks that landed
             _homePlayer.HandleInputs(input1);
             _awayPlayer.HandleInputs(input2);
             _homePlayer.HitResolution();
             _awayPlayer.HitResolution();
+
+            counter++;
         }
 
         // If the buffer for the "Away" player was not filled, pause the game until the buffer is filled enough
@@ -123,7 +137,7 @@ public partial class GameController : Node
     public void QueueNetworkInput(int input)
     {
         _inputBufferAway.Enqueue(input);
-        GD.Print(_inputBufferAway.Count);
+        //GD.Print(_inputBufferAway.Count);
         // If the game was paused, unpause only if there are enough frames of input to maintain the delay
         if (_inputBufferAway.Count >= _frameDelay)
         {
