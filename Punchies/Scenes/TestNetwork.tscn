@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3 uid="uid://b20rfdqw6bmll"]
+
+[ext_resource type="Script" path="res://Scripts/ClientServer.cs" id="1_e0rnw"]
+
+[node name="NetworkGateway" type="Node" node_paths=PackedStringArray("_serverButton", "_clientButton", "_messageButton", "_messageTextBox")]
+script = ExtResource("1_e0rnw")
+_serverButton = NodePath("Control/Server")
+_clientButton = NodePath("Control/Client")
+_messageButton = NodePath("Control/Send")
+_messageTextBox = NodePath("Control/Message Box")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1149.0
+offset_bottom = 650.0
+
+[node name="Server" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 125.0
+offset_top = 284.0
+offset_right = 456.0
+offset_bottom = 377.0
+text = "Server
+"
+
+[node name="Client" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 693.0
+offset_top = 286.0
+offset_right = 1024.0
+offset_bottom = 379.0
+text = "Client
+"
+
+[node name="Send" type="Button" parent="Control"]
+visible = false
+layout_mode = 0
+offset_left = 720.0
+offset_top = 290.0
+offset_right = 1011.0
+offset_bottom = 378.0
+text = "Send Message!"
+
+[node name="Message Box" type="TextEdit" parent="Control"]
+visible = false
+layout_mode = 0
+offset_left = 95.0
+offset_top = 74.0
+offset_right = 652.0
+offset_bottom = 565.0

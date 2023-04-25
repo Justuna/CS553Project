@@ -2,17 +2,25 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class Controller : Node2D
+public partial class GameController : Node
 {
     private Player _homePlayer;
     private Player _awayPlayer;
 
     [Export]
+    private Player _player1;
+    [Export] 
+    private Player _player2;
+    [Export]
     private InputReader _inputReader;
     [Export]
     private Timer _matchTimer;
     [Export]
+    private Timer _endDisplayTimer;
+    [Export]
     private Label _matchTimeLabel;
+    [Export]
+    private Label _endDisplayLabel;
 
     [Export]
     private int _frameDelay = 3;
@@ -22,25 +30,29 @@ public partial class Controller : Node2D
 
     private bool _gameOver = false;
 
-    // This should change based on netcode stuff, but right now just assume you're host
-    private bool _isHost = true;
+    private bool _isHost;
+
+    private PunchiesNetworkManager _pnm;
 
     // Default "game start" function that Godot provides
-    public override void _Ready()
+    public void Initialize(PunchiesNetworkManager pnm, bool isHost)
     {
+        _pnm = pnm;
+        _inputReader.Initialize(_pnm);
+        _isHost = isHost;
         _matchTimer.Timeout += GameOverHandler;
 
         // Get and fill references to players
         // Host is always player 1 to maintain consistency between clients
         if (_isHost)
         {
-            _homePlayer = GetNode<Player>("Player1");
-            _awayPlayer = GetNode<Player>("Player2");
+            _homePlayer = _player1;
+            _awayPlayer = _player2;
         }
         else
         {
-            _homePlayer = GetNode<Player>("Player2");
-            _awayPlayer = GetNode<Player>("Player1");
+            _homePlayer = _player2;
+            _awayPlayer = _player1;
         }
 
         // We're using delay-based netcode
@@ -87,15 +99,13 @@ public partial class Controller : Node2D
             _inputBufferHome.Enqueue(_inputReader.ConsumeInput());
 
             // Get the current frame's inputs for each player
-            // "Away" player is commented out because no netcode
             int input1 = _inputBufferHome.Dequeue();
-            //int input2 = _inputBufferRemote.Dequeue();
+            int input2 = _inputBufferAway.Dequeue();
 
             // Handle the inputs for each player
-            // Right now, the "Away" player is set to constantly punch
             // Then handle any attacks that landed
             _homePlayer.HandleInputs(input1);
-            _awayPlayer.HandleInputs((int)InputFlags.Punch);
+            _awayPlayer.HandleInputs(input2);
             _homePlayer.HitResolution();
             _awayPlayer.HitResolution();
         }
@@ -110,11 +120,12 @@ public partial class Controller : Node2D
     // Fills the "Away" player's buffer
     // A function to be called by whatever script reads from the network
     // When you make your netcode script, make sure the Node it's attached to is set to never pause so that it can alert the game to unpause
-    public void ReceiveNetworkInput(int input)
+    public void QueueNetworkInput(int input)
     {
         _inputBufferAway.Enqueue(input);
+        GD.Print(_inputBufferAway.Count);
         // If the game was paused, unpause only if there are enough frames of input to maintain the delay
-        if (_inputBufferAway.Count > _frameDelay)
+        if (_inputBufferAway.Count >= _frameDelay)
         {
             GetTree().Paused = false;
         }
@@ -124,30 +135,28 @@ public partial class Controller : Node2D
     private void GameOverHandler()
     {
         _gameOver = true;
-        Timer endDisplayTimer = GetNode<Timer>("EndDisplayTimer");
-        
-        endDisplayTimer.Timeout += DisplayGameOver;
-        endDisplayTimer.Start();
+        _matchTimer.Paused = true;
+
+        _endDisplayTimer.Timeout += DisplayGameOver;
+        _endDisplayTimer.Start();
     }
 
     // Display to screen message telling you who won
     private void DisplayGameOver()
     {
-        Label endDisplayLabel = GetNode<Label>("EndDisplayLabel");
-
         if ((_homePlayer.Health > _awayPlayer.Health && _isHost) || (_homePlayer.Health < _awayPlayer.Health && !_isHost))
         {
-            endDisplayLabel.Text = "Player 1 Wins!";
+            _endDisplayLabel.Text = "Player 1 Wins!";
         }
         else if ((_homePlayer.Health > _awayPlayer.Health && !_isHost) || (_homePlayer.Health < _awayPlayer.Health && _isHost))
         {
-            endDisplayLabel.Text = "Player 2 Wins!";
+            _endDisplayLabel.Text = "Player 2 Wins!";
         }
         else
         {
-            endDisplayLabel.Text = "Draw!";
+            _endDisplayLabel.Text = "Draw!";
         }
 
-        endDisplayLabel.Visible = true;
+        _endDisplayLabel.Visible = true;
     }
 }

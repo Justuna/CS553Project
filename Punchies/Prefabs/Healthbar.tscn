@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://c4btg5pl6dtwt"]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://Healthbar.cs" id="1_jb3x1"]
+[ext_resource type="Script" path="res://Scripts/Healthbar.cs" id="1_jb3x1"]
 
 [node name="Healthbar" type="ColorRect" node_paths=PackedStringArray("_fill")]
 offset_right = 400.0

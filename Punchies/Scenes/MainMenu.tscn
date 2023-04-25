@@ -1,0 +1,189 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0y3gw8fa7j47"]
+
+[ext_resource type="Script" path="res://Scripts/MainMenu.cs" id="1_8dkdu"]
+
+[node name="Main Menu" type="Control" node_paths=PackedStringArray("_hostButton", "_connectButton", "_ipField", "_waitingScreen", "_cancelButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8dkdu")
+_hostButton = NodePath("Host Panel/Host Button")
+_connectButton = NodePath("Client Panel/Connect Button")
+_ipField = NodePath("Client Panel/IP Field")
+_waitingScreen = NodePath("Waiting")
+_cancelButton = NodePath("Waiting/Cancel Button")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1153.0
+offset_bottom = 650.0
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -314.5
+offset_right = 314.5
+offset_bottom = 181.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 120
+text = "Punchies!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Host Panel" type="Control" parent="."]
+anchors_preset = 0
+anchor_left = 0.0381944
+anchor_top = 0.37963
+anchor_right = 0.469618
+anchor_bottom = 0.950617
+offset_top = -1.52588e-05
+metadata/_edit_group_ = true
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="Host Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -191.0
+offset_right = 191.0
+offset_bottom = 132.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = "Host a Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Host Button" type="Button" parent="Host Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -35.0
+offset_right = 120.0
+offset_bottom = 85.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(120, 0)
+theme_override_font_sizes/font_size = 40
+text = "Host!"
+
+[node name="Client Panel" type="Control" parent="."]
+anchors_preset = 0
+anchor_left = 0.53559
+anchor_top = 0.294753
+anchor_right = 0.961806
+anchor_bottom = 0.966049
+metadata/_edit_use_anchors_ = true
+metadata/_edit_group_ = true
+
+[node name="Label" type="Label" parent="Client Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -191.0
+offset_right = 191.0
+offset_bottom = 132.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = "Join a Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IP Field" type="TextEdit" parent="Client Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -231.5
+offset_top = -47.5
+offset_right = 231.5
+offset_bottom = 2.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/background_color = Color(0.878431, 0.878431, 0.878431, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_placeholder_color = Color(0.537255, 0.537255, 0.537255, 1)
+theme_override_font_sizes/font_size = 20
+placeholder_text = "Enter IP:"
+text_direction = 1
+
+[node name="Connect Button" type="Button" parent="Client Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -165.0
+offset_right = 120.0
+offset_bottom = -45.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(120, 0)
+theme_override_font_sizes/font_size = 40
+text = "Connect!"
+
+[node name="Waiting" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+offset_right = 1155.0
+offset_bottom = 650.0
+metadata/_edit_group_ = true
+
+[node name="Grey-out" type="ColorRect" parent="Waiting"]
+layout_mode = 0
+offset_left = -11.0
+offset_top = -6.0
+offset_right = 1159.0
+offset_bottom = 653.0
+color = Color(0.384314, 0.384314, 0.384314, 0.894118)
+
+[node name="Cancel Button" type="Button" parent="Waiting"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.0
+offset_top = 75.0
+offset_right = 157.0
+offset_bottom = 189.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "Cancel"
+
+[node name="Label" type="Label" parent="Waiting"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -75.0
+offset_right = 200.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 60
+text = "Waiting..."
+horizontal_alignment = 1
+vertical_alignment = 1

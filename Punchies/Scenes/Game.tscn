@@ -1,0 +1,163 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://Prefabs/Player.tscn" id="1_q0fov"]
+[ext_resource type="Script" path="res://Scripts/GameController.cs" id="1_w7ta3"]
+[ext_resource type="PackedScene" path="res://Prefabs/Healthbar.tscn" id="3_v0jag"]
+[ext_resource type="Script" path="res://Scripts/InputReader.cs" id="4_04tda"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jflht"]
+size = Vector2(1183, 226)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v23e8"]
+size = Vector2(1192, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_darqp"]
+size = Vector2(32.5, 523)
+
+[node name="Game" type="Node" node_paths=PackedStringArray("_player1", "_player2", "_inputReader", "_matchTimer", "_endDisplayTimer", "_matchTimeLabel", "_endDisplayLabel")]
+script = ExtResource("1_w7ta3")
+_player1 = NodePath("Players/Player 1")
+_player2 = NodePath("Players/Player 2")
+_inputReader = NodePath("Utilities/InputReader")
+_matchTimer = NodePath("UI/Match Time Label/Match Timer")
+_endDisplayTimer = NodePath("UI/End Display Label/End Display Timer")
+_matchTimeLabel = NodePath("UI/Match Time Label")
+_endDisplayLabel = NodePath("UI/End Display Label")
+
+[node name="Stage" type="Node2D" parent="."]
+
+[node name="Background" type="ColorRect" parent="Stage"]
+offset_left = -91.0
+offset_top = -90.0
+offset_right = 1226.0
+offset_bottom = 565.0
+
+[node name="Floor" type="StaticBody2D" parent="Stage"]
+
+[node name="ColorRect" type="ColorRect" parent="Stage/Floor"]
+offset_left = -16.0
+offset_top = 506.0
+offset_right = 1170.0
+offset_bottom = 737.0
+color = Color(0.784314, 0.858824, 0.858824, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Floor"]
+visible = false
+position = Vector2(577.5, 619)
+shape = SubResource("RectangleShape2D_jflht")
+
+[node name="Ceiling" type="StaticBody2D" parent="Stage"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Ceiling"]
+position = Vector2(577, -12)
+shape = SubResource("RectangleShape2D_v23e8")
+
+[node name="Left Wall" type="StaticBody2D" parent="Stage"]
+position = Vector2(-5, 357)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Left Wall"]
+position = Vector2(-10.5, -107)
+shape = SubResource("RectangleShape2D_darqp")
+
+[node name="Right Wall" type="StaticBody2D" parent="Stage"]
+position = Vector2(-10, 714)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Right Wall"]
+position = Vector2(1178.25, -461)
+shape = SubResource("RectangleShape2D_darqp")
+
+[node name="Camera2D" type="Camera2D" parent="Stage"]
+position = Vector2(576, 326)
+editor_draw_limits = true
+
+[node name="Players" type="Node2D" parent="."]
+
+[node name="Player 1" parent="Players" node_paths=PackedStringArray("_opponent", "_healthbar") instance=ExtResource("1_q0fov")]
+position = Vector2(160, 505)
+slide_on_ceiling = false
+_punchSpeed = 0.6
+_blockSpeed = 0.25
+_punchActiveStart = 0.4
+_punchActiveEnd = 0.7
+_color = Color(0.14902, 0.443137, 1, 1)
+_stunColor = Color(0.270588, 0.329412, 0.4, 1)
+_fistColor = Color(0, 0.0470588, 0.607843, 1)
+_fistColorActive = Color(0.196078, 0.980392, 1, 1)
+_fistColorBlock = Color(1, 1, 0, 1)
+_opponent = NodePath("../Player 2")
+_healthbar = NodePath("../../UI/Healthbar 1")
+
+[node name="Player 2" parent="Players" node_paths=PackedStringArray("_opponent", "_healthbar") instance=ExtResource("1_q0fov")]
+position = Vector2(993, 505)
+slide_on_ceiling = false
+_punchSpeed = 0.6
+_blockSpeed = 0.25
+_punchActiveStart = 0.4
+_punchActiveEnd = 0.7
+_color = Color(0.870588, 0.180392, 0.207843, 1)
+_stunColor = Color(0.490196, 0.309804, 0.305882, 1)
+_fistColor = Color(0.462745, 0, 0, 1)
+_fistColorActive = Color(1, 0.121569, 0.6, 1)
+_fistColorBlock = Color(1, 1, 0, 1)
+_opponent = NodePath("../Player 1")
+_healthbar = NodePath("../../UI/Healthbar 2")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="End Display Label" type="Label" parent="UI"]
+visible = false
+layout_mode = 0
+offset_left = 45.0
+offset_top = 140.0
+offset_right = 1113.0
+offset_bottom = 358.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 80
+text = "Testing"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="End Display Timer" type="Timer" parent="UI/End Display Label"]
+wait_time = 3.0
+one_shot = true
+
+[node name="Healthbar 1" parent="UI" instance=ExtResource("3_v0jag")]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 420.0
+offset_bottom = 60.0
+
+[node name="Healthbar 2" parent="UI" instance=ExtResource("3_v0jag")]
+layout_mode = 0
+offset_left = 1132.0
+offset_top = 20.0
+offset_right = 1532.0
+offset_bottom = 60.0
+scale = Vector2(-1, 1)
+
+[node name="Match Time Label" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 498.0
+offset_top = 10.0
+offset_right = 658.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Match Timer" type="Timer" parent="UI/Match Time Label"]
+wait_time = 60.0
+one_shot = true
+autostart = true
+
+[node name="Utilities" type="Node" parent="."]
+
+[node name="InputReader" type="Node" parent="Utilities"]
+process_mode = 3
+script = ExtResource("4_04tda")
