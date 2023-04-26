@@ -1,6 +1,10 @@
 using Godot;
 using System;
 
+public enum PlayerState { MOBILE, PUNCHING, STUNNED, ENDLAG, STARTBLOCK, BLOCKING, ENDBLOCK }
+
+public enum PNMType { ENet, LiteNetLib, GameNetworkingSockets }
+
 public enum ConnectionType { NOT_CONNECTED, CLIENT, HOST}
 
 // Store each input as a bit in a bit string

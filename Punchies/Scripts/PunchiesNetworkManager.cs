@@ -4,11 +4,11 @@ using System;
 public interface PunchiesNetworkManager
 {
     public const int SERVER_PORT = 42069;
-    public const int MAX_CLIENTS = 2;
+    public const int MAX_CLIENTS = 1;
 
     public void Initialize(SceneController sc);
 
-    public string GetManagerType();
+    public PNMType GetManagerType();
 
     public void HostGame();
 

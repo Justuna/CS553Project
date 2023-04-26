@@ -3,8 +3,6 @@ using System;
 
 public partial class SceneController : Node
 {
-    public enum PNMType { ENet, GameNetworkingSockets }
-
     [Export]
     private PackedScene _mainMenu;
     [Export]
@@ -23,6 +21,9 @@ public partial class SceneController : Node
         {
             case PNMType.ENet:
                 nm = new PNM_ENet();
+                break;
+            case PNMType.LiteNetLib:
+                nm = new PNM_LiteNetLib();
                 break;
         }
 

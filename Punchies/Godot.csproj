@@ -3,4 +3,20 @@
     <TargetFramework>net6.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Update="Godot.SourceGenerators" Version="4.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="GodotSharp" Version="4.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="GodotSharpEditor" Version="4.0.2" />
+  </ItemGroup>
+
+  <!--Added Libraries-->
+  <ItemGroup>
+    <PackageReference Include="LiteNetLib">
+      <Version>1.1.0</Version>
+    </PackageReference>
+  </ItemGroup>
 </Project>

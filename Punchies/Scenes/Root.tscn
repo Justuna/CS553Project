@@ -8,3 +8,4 @@
 script = ExtResource("1_5micr")
 _mainMenu = ExtResource("1_rgu10")
 _game = ExtResource("3_6v2og")
+_networkManagerType = 1

@@ -15,24 +15,9 @@ public partial class PNM_ENet : Node, PunchiesNetworkManager
         _sc = sc;
     }
 
-    public string GetManagerType()
+    public PNMType GetManagerType()
     {
-        return "ENet Network Manager";
-    }
-
-    public void CancelGame()
-    {
-        GetTree().GetMultiplayer().MultiplayerPeer.Close();
-        if (_connection == ConnectionType.CLIENT)
-        {
-            GetTree().GetMultiplayer().ConnectedToServer -= StartGameAsClient;
-        }
-        else if (_connection == ConnectionType.HOST)
-        {
-            GetTree().GetMultiplayer().PeerConnected -= StartGameAsHost;
-        }
-        
-        _connection = ConnectionType.NOT_CONNECTED;
+        return PNMType.ENet;
     }
 
     public void HostGame()
@@ -89,6 +74,21 @@ public partial class PNM_ENet : Node, PunchiesNetworkManager
         }
 
         _connection = ConnectionType.CLIENT;
+    }
+
+    public void CancelGame()
+    {
+        GetTree().GetMultiplayer().MultiplayerPeer.Close();
+        if (_connection == ConnectionType.CLIENT)
+        {
+            GetTree().GetMultiplayer().ConnectedToServer -= StartGameAsClient;
+        }
+        else if (_connection == ConnectionType.HOST)
+        {
+            GetTree().GetMultiplayer().PeerConnected -= StartGameAsHost;
+        }
+
+        _connection = ConnectionType.NOT_CONNECTED;
     }
 
     private void StartGameAsHost(long id)

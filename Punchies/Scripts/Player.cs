@@ -2,8 +2,6 @@ using Godot;
 using System;
 using System.Diagnostics;
 
-public enum PlayerState { MOBILE, PUNCHING, STUNNED, ENDLAG, STARTBLOCK, BLOCKING, ENDBLOCK }
-
 public partial class Player : CharacterBody2D
 {
     [Export]
@@ -71,7 +69,7 @@ public partial class Player : CharacterBody2D
     private const int MAX_HEALTH = 100;
     public int Health { get; private set; } = MAX_HEALTH;
 
-    private HitInfo? _outstandingHit = null;
+    private HitInfo _outstandingHit = null;
 
     private int _stunFrames = 0;
     private int _endlagFrames = 0;
