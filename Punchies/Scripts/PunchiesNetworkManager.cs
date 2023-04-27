@@ -10,7 +10,7 @@ public interface PunchiesNetworkManager
 
     public PNMType GetManagerType();
 
-    public void HostGame();
+    public void HostGame(string ip);
 
     public void JoinGame(string ip);
 

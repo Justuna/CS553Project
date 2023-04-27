@@ -32,12 +32,25 @@ public partial class PNM_LiteNetLib : Node, PunchiesNetworkManager
         return PNMType.LiteNetLib;
     }
 
-    public void HostGame()
+    public void HostGame(string ip)
     {
-        _netManager.Start(PunchiesNetworkManager.SERVER_PORT);
+        System.Net.IPAddress address = NetUtils.ResolveAddress(ip);
+        string ipv4 = "";
+        string ipv6 = "";
+        if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+        {
+            ipv4 = address.MapToIPv4().ToString();
+            ipv6 = ip;
+        } 
+        else if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+        {
+            ipv4 = ip;
+            ipv6 = address.MapToIPv6().ToString();
+        }
+        _netManager.Start(ipv4, ipv6, PunchiesNetworkManager.SERVER_PORT);
 
         _listener.ConnectionRequestEvent += OnConnectionRequest;
-        _listener.PeerConnectedEvent += OnClientConnected;
+        _listener.PeerConnectedEvent += StartGameAsHost;
 
         _connection = ConnectionType.HOST;
     }
@@ -56,7 +69,7 @@ public partial class PNM_LiteNetLib : Node, PunchiesNetworkManager
         }
     }
 
-    private void OnClientConnected(NetPeer peer)
+    private void StartGameAsHost(NetPeer peer)
     {
         GD.Print("Connected to peer on port " + peer.EndPoint.Port + " at " + peer.EndPoint.Address);
         _game = _sc.StartGameAsHost();
@@ -69,12 +82,12 @@ public partial class PNM_LiteNetLib : Node, PunchiesNetworkManager
         _netManager.Start();
         _netManager.Connect(ip, PunchiesNetworkManager.SERVER_PORT, NETWORK_KEY);
 
-        _listener.PeerConnectedEvent += OnConnectToServer;
+        _listener.PeerConnectedEvent += StartGameAsClient;
 
         _connection = ConnectionType.CLIENT;
     }
 
-    private void OnConnectToServer(NetPeer peer)
+    private void StartGameAsClient(NetPeer peer)
     {
         GD.Print("Connected to server on port " + peer.EndPoint.Port + " at " + peer.EndPoint.Address);
         _game = _sc.StartGameAsClient();
@@ -94,12 +107,12 @@ public partial class PNM_LiteNetLib : Node, PunchiesNetworkManager
         _netManager.Stop();
         if (_connection == ConnectionType.CLIENT)
         {
-            _listener.PeerConnectedEvent -= OnConnectToServer;
+            _listener.PeerConnectedEvent -= StartGameAsClient;
         }
         else if (_connection == ConnectionType.HOST)
         {
             _listener.ConnectionRequestEvent -= OnConnectionRequest;
-            _listener.PeerConnectedEvent -= OnClientConnected;
+            _listener.PeerConnectedEvent -= StartGameAsHost;
         }
 
         _connection = ConnectionType.NOT_CONNECTED;

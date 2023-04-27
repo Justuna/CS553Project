@@ -25,6 +25,9 @@ public partial class SceneController : Node
             case PNMType.LiteNetLib:
                 nm = new PNM_LiteNetLib();
                 break;
+            case PNMType.GameNetworkingSockets:
+                nm = new PNM_GameNetworkingSockets();
+                break;
         }
 
         try

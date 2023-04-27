@@ -29,19 +29,22 @@ public partial class MainMenu : Control
 
     public void HostGame()
     {
-        try
+        if (_ipField.Text.Trim().Length > 0)
         {
-            _pnm.HostGame();
+            try
+            {
+                _pnm.HostGame(_ipField.Text.Trim());
 
-            _hostButton.Disabled = true;
-            _connectButton.Disabled = true;
-            _ipField.Editable = false;
-            _waitingScreen.Visible = true;
-            _cancelButton.Disabled = false;
-        } 
-        catch (Exception e)
-        {
-            GD.Print(e.Message);
+                _hostButton.Disabled = true;
+                _connectButton.Disabled = true;
+                _ipField.Editable = false;
+                _waitingScreen.Visible = true;
+                _cancelButton.Disabled = false;
+            }
+            catch (Exception e)
+            {
+                GD.Print(e.Message);
+            }
         }
     }
 

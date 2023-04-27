@@ -20,7 +20,7 @@ public partial class PNM_ENet : Node, PunchiesNetworkManager
         return PNMType.ENet;
     }
 
-    public void HostGame()
+    public void HostGame(string ip)
     {
         ENetMultiplayerPeer eNetPeer;
         if (GetTree().GetMultiplayer().MultiplayerPeer != null && GetTree().GetMultiplayer().MultiplayerPeer is ENetMultiplayerPeer)
@@ -36,6 +36,7 @@ public partial class PNM_ENet : Node, PunchiesNetworkManager
 
         GetTree().GetMultiplayer().PeerConnected += StartGameAsHost;
 
+        eNetPeer.SetBindIP(ip);
         Error error = eNetPeer.CreateServer(PunchiesNetworkManager.SERVER_PORT, PunchiesNetworkManager.MAX_CLIENTS);
 
         GetTree().GetMultiplayer().MultiplayerPeer = eNetPeer;
