@@ -3,6 +3,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' == 'WINDOWS_NT'">
+	<DefineConstants>OS_WINDOWS</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);VALVESOCKETS_SPAN</DefineConstants>
   </PropertyGroup>

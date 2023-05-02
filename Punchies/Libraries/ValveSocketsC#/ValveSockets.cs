@@ -796,8 +796,14 @@ namespace Valve.Sockets {
 
 	[SuppressUnmanagedCodeSecurity]
 	internal static class Native {
+
+#if OS_WINDOWS
 		private const string nativeLibrary = "Libraries/ValveSocketsC#/libGameNetworkingSockets.dll";
 
+#else
+		private const string nativeLibrary = "Libraries/ValveSocketsC#/libGameNetworkingSockets.so";
+
+#endif
 		[DllImport(nativeLibrary, CallingConvention = CallingConvention.Cdecl)]
 		internal static extern bool GameNetworkingSockets_Init(IntPtr identity, StringBuilder errorMessage);
 
