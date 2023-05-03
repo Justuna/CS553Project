@@ -797,7 +797,7 @@ namespace Valve.Sockets {
 	[SuppressUnmanagedCodeSecurity]
 	internal static class Native {
 
-#if OS_WINDOWS
+#if GODOT_WINDOWS
 		private const string nativeLibrary = "Libraries/ValveSocketsC#/libGameNetworkingSockets.dll";
 
 #else

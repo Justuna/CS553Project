@@ -4,11 +4,13 @@ using Valve.Sockets;
 
 public partial class PNM_GameNetworkingSockets : Node, PunchiesNetworkManager
 {
+    private const int MAX_MESSAGES = 20;
     private ConnectionType _connection = ConnectionType.NOT_CONNECTED;
     private NetworkingUtils _utils;
     private SceneController _sc;
     private GameController _game;
     private NetworkingSockets _self;
+    private NetworkingMessage[] _netMessages = new NetworkingMessage[MAX_MESSAGES];
     private uint _peer;
 
     public void Initialize(SceneController sc)
@@ -120,11 +122,17 @@ public partial class PNM_GameNetworkingSockets : Node, PunchiesNetworkManager
         {
             _self.RunCallbacks();
 
-            _self.ReceiveMessagesOnConnection(_peer, (in NetworkingMessage message) =>
+            int netMessagesCount = _self.ReceiveMessagesOnConnection(_peer, _netMessages, MAX_MESSAGES);
+
+            if (netMessagesCount > 0)
             {
-                message.CopyTo(_intBuffer);
-                ReceiveInput(BitConverter.ToInt32(_intBuffer));
-            }, 32);
+                for (int i = 0; i < netMessagesCount; i++)
+                {
+                    ref NetworkingMessage message = ref _netMessages[i];
+                    message.CopyTo(_intBuffer);
+                    ReceiveInput(BitConverter.ToInt32(_intBuffer));
+                }
+            }
         }
     }
 

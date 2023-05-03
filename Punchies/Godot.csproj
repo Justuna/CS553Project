@@ -3,32 +3,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(OS)' == 'WINDOWS_NT'">
-	<DefineConstants>OS_WINDOWS</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);VALVESOCKETS_SPAN</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ExportDebug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);VALVESOCKETS_SPAN</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ExportRelease|AnyCPU'">
-    <DefineConstants>$(DefineConstants);VALVESOCKETS_SPAN</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
   <ItemGroup>
     <None Include="Libraries/ValveSocketsC#/libGameNetworkingSockets.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="Godot.SourceGenerators" Version="4.0.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="GodotSharp" Version="4.0.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="GodotSharpEditor" Version="4.0.2" />
   </ItemGroup>
   <!--Added Libraries-->
   <ItemGroup>
