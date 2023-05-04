@@ -6,6 +6,9 @@
   <ItemGroup>
     <None Include="Libraries/ValveSocketsC#/libGameNetworkingSockets.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Libraries/ValveSocketsC#/libGameNetworkingSockets.so" />
+  </ItemGroup>
   <!--Added Libraries-->
   <ItemGroup>
     <PackageReference Include="LiteNetLib">

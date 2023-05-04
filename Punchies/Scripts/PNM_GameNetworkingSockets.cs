@@ -12,6 +12,7 @@ public partial class PNM_GameNetworkingSockets : Node, PunchiesNetworkManager
     private NetworkingSockets _self;
     private NetworkingMessage[] _netMessages = new NetworkingMessage[MAX_MESSAGES];
     private uint _peer;
+    private uint _listenSocket;
 
     public void Initialize(SceneController sc)
     {
@@ -19,6 +20,12 @@ public partial class PNM_GameNetworkingSockets : Node, PunchiesNetworkManager
         Library.Initialize();
 
         _utils = new NetworkingUtils();
+
+        DebugCallback debugCallback = (DebugType verbosity, string message) => {
+            GD.PrintErr("GameNetworkingSockets " + _connection + " says: " + message);
+        };
+
+        _utils.SetDebugCallback(DebugType.Everything, debugCallback);
     }
 
     public PNMType GetManagerType()
@@ -33,34 +40,47 @@ public partial class PNM_GameNetworkingSockets : Node, PunchiesNetworkManager
         _self = server;
 
         GD.Print("Setting up callback");
-        StatusCallback statusCallback = (ref StatusInfo status) =>
-        {
-            switch (status.connectionInfo.state)
-            {
-                case ConnectionState.Connecting:
-                    _peer = status.connection;
-                    server.AcceptConnection(_peer);
-                    GD.Print("Connected to peer on port " + status.connectionInfo.listenSocket + " at " + status.connectionInfo.address);
-                    break;
-                case ConnectionState.Connected:
-                    StartGameAsHost();
-                    break;
-                default:
-                    break;
-            }
-        };
-
+        StatusCallback statusCallback = ServerCallback;
         _utils.SetStatusCallback(statusCallback);
 
         GD.Print("Binding to address");
         Address address = new Address();
         address.SetAddress(ip, PunchiesNetworkManager.SERVER_PORT);
 
-        GD.Print("Creating listening socket on address " + address.GetIP());
-        uint listenSocket = server.CreateListenSocket(ref address);
+        Address test = new Address();
+
+        _listenSocket = server.CreateListenSocket(ref address);
+        
+        _self.GetListenSocketAddress(_listenSocket, ref test);
+        GD.Print("Creating listening socket on address " + test.GetIP() + ":" + test.port);
 
         GD.Print("Done setting up");
         _connection = ConnectionType.HOST;
+    }
+
+    private void ServerCallback(ref StatusInfo status) {
+        GD.Print("Identity: " + status.connectionInfo.identity);
+        GD.Print("User data: " + status.connectionInfo.userData);
+        GD.Print("Listening socket: " + ((ushort)status.connectionInfo.listenSocket));
+        GD.Print("Address: " + status.connectionInfo.address.ip + " " + status.connectionInfo.address.port);
+        GD.Print("State: " + status.connectionInfo.state);
+        GD.Print("End reason: " + status.connectionInfo.endReason);
+        GD.Print("End reason: " + status.connectionInfo.endDebug);
+        GD.Print("Desc: " + status.connectionInfo.connectionDescription);
+        switch (status.connectionInfo.state)
+            {
+                case ConnectionState.Connecting:
+                    _peer = status.connection;
+                    _self.AcceptConnection(_peer);
+                    GD.Print("Connected to peer on port " + status.connectionInfo.listenSocket + " at " + status.connectionInfo.address);
+                    break;
+                case ConnectionState.Connected:
+                    StartGameAsHost();
+                    break;
+                default:
+                    GD.Print("Host state: " + status.connectionInfo.state);
+                    break;
+            }
     }
 
     private void StartGameAsHost()
@@ -72,35 +92,46 @@ public partial class PNM_GameNetworkingSockets : Node, PunchiesNetworkManager
 
     public void JoinGame(string ip)
     {
-        GD.Print("Starting client");
+        //GD.Print("Starting client");
         NetworkingSockets client = new NetworkingSockets();
         _self = client;
 
-        GD.Print("Setting up callback");
-        StatusCallback statusCallback = (ref StatusInfo status) =>
-        {
-            switch (status.connectionInfo.state)
-            {
-                case ConnectionState.Connected:
-                    GD.Print("Connected to peer on port " + status.connectionInfo.listenSocket + " at " + status.connectionInfo.address);
-                    StartGameAsClient();
-                    break;
-                default:
-                    break;
-            }
-        };
-
+        //GD.Print("Setting up callback");
+        StatusCallback statusCallback = ClientCallback;
         _utils.SetStatusCallback(statusCallback);
 
-        GD.Print("Binding to address");
+        //GD.Print("Binding to address");
         Address address = new Address();
         address.SetAddress(ip, PunchiesNetworkManager.SERVER_PORT);
 
         GD.Print("Connecting");
+
         _peer = client.Connect(ref address);
 
-        GD.Print("Done setting up");
+        //GD.Print("Done setting up");
         _connection = ConnectionType.CLIENT;
+    }
+
+    private void ClientCallback (ref StatusInfo status)
+    {
+        GD.Print("Identity: " + status.connectionInfo.identity);
+        GD.Print("User data: " + status.connectionInfo.userData);
+        GD.Print("Listening socket: " + ((ushort)status.connectionInfo.listenSocket));
+        GD.Print("Address: " + status.connectionInfo.address.ip + " " + status.connectionInfo.address.port);
+        GD.Print("State: " + status.connectionInfo.state);
+        GD.Print("End reason: " + status.connectionInfo.endReason);
+        GD.Print("End reason: " + status.connectionInfo.endDebug);
+        GD.Print("Desc: " + status.connectionInfo.connectionDescription);
+        switch (status.connectionInfo.state)
+        {
+            case ConnectionState.Connected:
+                GD.Print("Connected to peer on port " + status.connectionInfo.listenSocket + " at " + status.connectionInfo.address);
+                StartGameAsClient();
+                break;
+            default:
+                GD.Print("Client state: " + status.connectionInfo.state);
+                break;
+        }
     }
 
     private void StartGameAsClient()
@@ -111,6 +142,11 @@ public partial class PNM_GameNetworkingSockets : Node, PunchiesNetworkManager
 
     public void CancelGame()
     {
+        _self.CloseConnection(_peer);
+        if (_connection == ConnectionType.HOST) {
+            _self.CloseListenSocket(_listenSocket);
+        }
+        
         _self = null;
         _utils.SetStatusCallback(null);
         _connection = ConnectionType.NOT_CONNECTED;
@@ -141,11 +177,25 @@ public partial class PNM_GameNetworkingSockets : Node, PunchiesNetworkManager
     public void SendInput(int input)
     {
         byte[] bytes = BitConverter.GetBytes(input);
-        _self.SendMessageToConnection(_peer, bytes);
+        _self.SendMessageToConnection(_peer, bytes, SendFlags.Reliable);
     }
 
     private void ReceiveInput(int input)
     {
         _game.QueueNetworkInput(input);
+    }
+
+    public override void _ExitTree()
+    {
+        Library.Deinitialize();
+        base._ExitTree();
+    }
+
+    public override void _Notification(int what)
+    {
+        if (what == NotificationWMCloseRequest) {
+            Library.Deinitialize();
+        }
+        base._Notification(what);
     }
 }

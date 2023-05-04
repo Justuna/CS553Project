@@ -100,6 +100,7 @@ namespace Valve.Sockets {
 		EnumerateDevVars = 35,
 		SymmetricConnect = 37,
 		LocalVirtualPort = 38,
+		PacketTraceMaxBytes = 41,
 		ConnectionStatusChanged = 201,
 		AuthStatusChanged = 202,
 		RelayNetworkStatusChanged = 203,
