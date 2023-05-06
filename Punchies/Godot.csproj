@@ -4,9 +4,11 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="Libraries/ValveSocketsC#/libprotobuf.dll" />
     <None Include="Libraries/ValveSocketsC#/libGameNetworkingSockets.dll" />
   </ItemGroup>
   <ItemGroup>
+	<None Include="Libraries/ValveSocketsC#/libprotobuf.so" />
     <None Include="Libraries/ValveSocketsC#/libGameNetworkingSockets.so" />
   </ItemGroup>
   <!--Added Libraries-->
