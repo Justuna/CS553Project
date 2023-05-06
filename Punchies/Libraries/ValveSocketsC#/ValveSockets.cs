@@ -258,10 +258,139 @@ namespace Valve.Sockets {
 		WGNetworkSendExceeded = 110
 	}
 
+#if GODOT_LINUXBSD
+
+	[StructLayout(LayoutKind.Explicit, Size = 20, Pack = 1)]
+	public struct Address : IEquatable<Address> {
+		[FieldOffset(0)]
+		public byte ip0;
+		[FieldOffset(1)]
+		public byte ip1;
+		[FieldOffset(2)]
+		public byte ip2;
+		[FieldOffset(3)]
+		public byte ip3;
+		[FieldOffset(4)]
+		public byte ip4;
+		[FieldOffset(5)]
+		public byte ip5;
+		[FieldOffset(6)]
+		public byte ip6;
+		[FieldOffset(7)]
+		public byte ip7;
+		[FieldOffset(8)]
+		public byte ip8;
+		[FieldOffset(9)]
+		public byte ip9;
+		[FieldOffset(10)]
+		public byte ip10;
+		[FieldOffset(11)]
+		public byte ip11;
+		[FieldOffset(12)]
+		public byte ip12;
+		[FieldOffset(13)]
+		public byte ip13;
+		[FieldOffset(14)]
+		public byte ip14;
+		[FieldOffset(15)]
+		public byte ip15;
+
+		[FieldOffset(16)]
+		public ushort port;
+
+		public byte[] ip {get {return new byte[]{ip0, ip1, ip2, ip3, ip4, ip5, ip6, ip7, ip8, ip9, ip10, ip11, ip12, ip13, ip14, ip15};}
+							set {
+								ip0 = value[0];
+								ip1 = value[1];
+								ip2 = value[2];
+								ip3 = value[3];
+								ip4 = value[4];
+								ip5 = value[5];
+								ip6 = value[6];
+								ip7 = value[7];
+								ip8 = value[8];
+								ip9 = value[9];
+								ip10 = value[10];
+								ip11 = value[11];
+								ip12 = value[12];
+								ip13 = value[13];
+								ip14 = value[14];
+								ip15 = value[15];
+							}}
+
+		public bool IsLocalHost {
+			get {
+				return Native.SteamAPI_SteamNetworkingIPAddr_IsLocalHost(ref this);
+			}
+		}
+
+		public string GetIP() {
+			return ip.ParseIP();
+		}
+
+		public void SetLocalHost(ushort port) {
+			Native.SteamAPI_SteamNetworkingIPAddr_SetIPv6LocalHost(ref this, port);
+		}
+
+		public void SetAddress(string ip, ushort port) {
+			if (!ip.Contains(":"))
+				Native.SteamAPI_SteamNetworkingIPAddr_SetIPv4(ref this, ip.ParseIPv4(), port);
+			else
+				Native.SteamAPI_SteamNetworkingIPAddr_SetIPv6(ref this, ip.ParseIPv6(), port);
+		}
+
+		public bool Equals(Address other) {
+			return Native.SteamAPI_SteamNetworkingIPAddr_IsEqualTo(ref this, ref other);
+		}
+	}
+
+	[StructLayout(LayoutKind.Explicit, Size = 704, Pack = 4)]
+	public struct StatusInfo {
+		private const int callback = Library.socketsCallbacks + 1;
+		[FieldOffset(0)]
+		public Connection connection;
+		[FieldOffset(4)]
+		public ConnectionInfo connectionInfo;
+		[FieldOffset(700)]
+		private ConnectionState oldState;
+	}
+
+	[StructLayout(LayoutKind.Explicit, Size = 696, Pack = 4)]
+	public struct ConnectionInfo {
+		[FieldOffset(0)]
+		public NetworkingIdentity identity;
+		[FieldOffset(136)]
+		public long userData;
+		[FieldOffset(144)]
+		public ListenSocket listenSocket;
+		[FieldOffset(148)]
+		public Address address;
+		[FieldOffset(168)]
+		private uint popRemote;
+		[FieldOffset(172)]
+		private uint popRelay;
+		[FieldOffset(176)]
+		public ConnectionState state;
+		[FieldOffset(180)]
+		public int endReason;
+		//[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+		//[FieldOffset(184)]
+		//public string endDebug;
+		//[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+		//[FieldOffset(312)]
+		//public string connectionDescription;
+		//[MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+		//[FieldOffset(440)]
+		//private uint[] reserved;
+	}
+
+#else 
+
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Address : IEquatable<Address> {
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+		[MarshalAs(ByValArray, SizeConst = 16)]
 		public byte[] ip;
+
 		public ushort port;
 
 		public bool IsLocalHost {
@@ -291,6 +420,34 @@ namespace Valve.Sockets {
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
+	public struct StatusInfo {
+		private const int callback = Library.socketsCallbacks + 1;
+		public Connection connection;
+		public ConnectionInfo connectionInfo;
+		private ConnectionState oldState;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct ConnectionInfo {
+		public NetworkingIdentity identity;
+		public long userData;
+		public ListenSocket listenSocket;
+		public Address address;
+		private uint popRemote;
+		private uint popRelay;
+		public ConnectionState state;
+		public int endReason;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+		public string endDebug;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+		public string connectionDescription;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
+		private uint[] reserved;
+	}
+
+#endif
+
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Configuration {
 		public ConfigurationValue value;
 		public ConfigurationDataType dataType;
@@ -309,33 +466,6 @@ namespace Valve.Sockets {
 			[FieldOffset(0)]
 			public IntPtr FunctionPtr;
 		}
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct StatusInfo {
-		private const int callback = Library.socketsCallbacks + 1;
-		public Connection connection;
-		public ConnectionInfo connectionInfo;
-		private ConnectionState oldState;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct ConnectionInfo {
-		public NetworkingIdentity identity;
-		public long userData;
-		public ListenSocket listenSocket;
-		public Address address;
-		private ushort pad;
-		private uint popRemote;
-		private uint popRelay;
-		public ConnectionState state;
-		public int endReason;
-		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-		public string endDebug;
-		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-		public string connectionDescription;
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
-		private uint[] reserved;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]

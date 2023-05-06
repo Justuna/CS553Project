@@ -34,12 +34,18 @@ public partial class GameController : Node
 
     private PunchiesNetworkManager _pnm;
 
+    public ulong TotalTime {get; private set;}
+    public int TotalFrames {get; private set;}
+    private ulong _lastActiveFrameTime = 0;
+    public ulong LargestSpike {get; private set;}
+
     public void Initialize(PunchiesNetworkManager pnm, bool isHost)
     {
         _pnm = pnm;
         _inputReader.Initialize(_pnm);
         _isHost = isHost;
         _matchTimer.Timeout += GameOverHandler;
+        _lastActiveFrameTime = Time.GetTicksMsec();
 
         // Get and fill references to players
         // Host is always player 1 to maintain consistency between clients
@@ -94,6 +100,16 @@ public partial class GameController : Node
         // Check if the buffer for the opponent is filled enough to maintain delay
         if (_inputBufferAway.Count > 0)
         {
+            ulong time = Time.GetTicksMsec();
+            ulong betterDelta = time - _lastActiveFrameTime;
+
+            TotalTime += betterDelta;
+            LargestSpike = (LargestSpike > betterDelta) ? LargestSpike : betterDelta;
+
+            _lastActiveFrameTime = time;
+
+            TotalFrames += 1;
+
             // Get the input from the local input reader and queue it
             _inputBufferHome.Enqueue(_inputReader.ConsumeInput());
 
@@ -147,6 +163,8 @@ public partial class GameController : Node
     {
         _gameOver = true;
         _matchTimer.Paused = true;
+        GD.Print("Average FPS: " + ((float)TotalFrames / ((float)TotalTime / 1000)) + " frames per second");
+        GD.Print("Largest Latency Spike: " + LargestSpike + " ms");
 
         _endDisplayTimer.Timeout += DisplayGameOver;
         _endDisplayTimer.Start();
