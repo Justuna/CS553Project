@@ -388,7 +388,7 @@ namespace Valve.Sockets {
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Address : IEquatable<Address> {
-		[MarshalAs(ByValArray, SizeConst = 16)]
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
 		public byte[] ip;
 
 		public ushort port;
