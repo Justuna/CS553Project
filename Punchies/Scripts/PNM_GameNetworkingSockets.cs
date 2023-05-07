@@ -138,7 +138,7 @@ public partial class PNM_GameNetworkingSockets : Node, PunchiesNetworkManager
     public void SendInput(int input)
     {
         byte[] bytes = BitConverter.GetBytes(input);
-        _self.SendMessageToConnection(_peer, bytes, SendFlags.Reliable | SendFlags.NoNagle);
+        _self.SendMessageToConnection(_peer, bytes, SendFlags.Reliable);
     }
 
     private void ReceiveInput(int input)

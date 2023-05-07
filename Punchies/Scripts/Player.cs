@@ -328,7 +328,6 @@ public partial class Player : CharacterBody2D
     // Function that can be used to mark a hit on a player for the attack resolution phase
     public void RegisterHit(int damage, float upwardKnockback, float forwardKnockback, int stunFrames, Vector2 direction)
     {
-        GD.Print(Name + " took " + damage + " damage!");
         _outstandingHit = new HitInfo(damage, upwardKnockback, forwardKnockback, stunFrames, direction);
     }
 

@@ -2,10 +2,9 @@
 
 [ext_resource type="Script" path="res://Scripts/SceneController.cs" id="1_5micr"]
 [ext_resource type="PackedScene" uid="uid://b0y3gw8fa7j47" path="res://Scenes/MainMenu.tscn" id="1_rgu10"]
-[ext_resource type="PackedScene" path="res://Scenes/Game.tscn" id="3_6v2og"]
+[ext_resource type="PackedScene" uid="uid://evfwd6nn53kk" path="res://Scenes/Game.tscn" id="3_6v2og"]
 
 [node name="Scene" type="Node"]
 script = ExtResource("1_5micr")
 _mainMenu = ExtResource("1_rgu10")
 _game = ExtResource("3_6v2og")
-_networkManagerType = 2

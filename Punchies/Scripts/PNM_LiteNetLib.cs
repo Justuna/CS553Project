@@ -129,6 +129,5 @@ public partial class PNM_LiteNetLib : Node, PunchiesNetworkManager
     {
         int input = reader.GetInt();
         _game.QueueNetworkInput(input);
-        GD.Print(_connection + " received: " + input);
     }
 }

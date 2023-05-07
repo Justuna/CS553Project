@@ -108,7 +108,7 @@ public partial class GameController : Node
 
             _lastActiveFrameTime = time;
 
-            TotalFrames += 1;
+            TotalFrames += 1; 
 
             // Get the input from the local input reader and queue it
             _inputBufferHome.Enqueue(_inputReader.ConsumeInput());
@@ -116,6 +116,8 @@ public partial class GameController : Node
             // Get the current frame's inputs for each player
             int input1 = _inputBufferHome.Dequeue();
             int input2 = _inputBufferAway.Dequeue();
+
+            GD.Print(TotalFrames + ": " + input1 + " " + input2);
 
             // Handle the inputs for each player
             // Then handle any attacks that landed
