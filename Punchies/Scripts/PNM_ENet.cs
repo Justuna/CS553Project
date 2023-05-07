@@ -32,7 +32,7 @@ public partial class PNM_ENet : Node, PunchiesNetworkManager
             eNetPeer = new ENetMultiplayerPeer();
         }
         
-        eNetPeer.TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered;
+        eNetPeer.TransferMode = MultiplayerPeer.TransferModeEnum.Reliable;
 
         GetTree().GetMultiplayer().PeerConnected += StartGameAsHost;
 
@@ -61,7 +61,7 @@ public partial class PNM_ENet : Node, PunchiesNetworkManager
             eNetPeer = new ENetMultiplayerPeer();
         }
 
-        eNetPeer.TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered;
+        eNetPeer.TransferMode = MultiplayerPeer.TransferModeEnum.Reliable;
 
         GetTree().GetMultiplayer().ConnectedToServer += StartGameAsClient;
 
