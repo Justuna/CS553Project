@@ -55,6 +55,10 @@ To run the evaluations:
 
 `godot`
 
+Each evaluation takes a few minutes, depending on network conditions (or until you get bored :p). The two statistics (average FPS and biggest delay) are printed to the terminal at the end (along with other debug information throughout).
+
+It took us about an hour to run all of the tests in our report.
+
 To open the godot editor (to swap out the library):
 
 `godot -e`
